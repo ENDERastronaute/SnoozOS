@@ -6,8 +6,6 @@ OBJ_DIR := objects
 
 SOURCES = $(wildcard $(KERNEL_DIR)/*.cpp) $(wildcard $(DRIVERS_DIR)/**/*.cpp)
 
-HEADERS := $(shell find $(SRC_DIRS) -name '*.h')
-
 OBJ = $(SOURCES:.cpp=.o)
 
 # Cible par défaut

@@ -24,7 +24,7 @@ init_pm:
     mov fs, ax
     mov gs, ax
 
-    mov ebp, 0x90000 ; stack pos to top of free space
+    mov ebp, 0x9000 ; stack pos to top of free space
     mov esp, ebp
 
-    jmp protected ; next
+    call protected ; next
