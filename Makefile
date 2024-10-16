@@ -4,7 +4,7 @@ DRIVERS_DIR := drivers
 
 OBJ_DIR := objects
 
-SOURCES = $(wildcard $(KERNEL_DIR)/*.cpp) $(wildcard $(DRIVERS_DIR)/**/*.cpp)
+SOURCES = $(wildcard $(KERNEL_DIR)/*.cpp) $(wildcard $(KERNEL_DIR)/**/*.cpp)  $(wildcard $(DRIVERS_DIR)/**/*.cpp)
 
 OBJ = $(SOURCES:.cpp=.o)
 
@@ -34,10 +34,13 @@ out/bootloader.bin: boot/bootloader.asm
 		yasm $< -f bin -o $@
 
 # Utiliser les fichiers objets au lieu des fichiers sources
-out/kernel.bin: ${OBJ_DIR}/entry.o $(OBJ)
+out/kernel.bin: ${OBJ_DIR}/entry.o $(OBJ) ${OBJ_DIR}/stub.o
 		/usr/local/cross/bin/i386-elf-ld -o $@ -Ttext 0x1000 $^ --oformat binary
 
-${OBJ_DIR}/entry.o: kernel/entry/entry.asm
+${OBJ_DIR}/stub.o : kernel/isr/stub.asm
+		yasm $< -f elf -o $@
+
+${OBJ_DIR}/entry.o : kernel/entry/entry.asm
 		yasm $< -f elf -o $@
 
 %.o : %.cpp
@@ -45,4 +48,4 @@ ${OBJ_DIR}/entry.o: kernel/entry/entry.asm
 
 # Cible de nettoyage
 clean:
-		rm -rf out/* $(OBJ_DIR)/* SnoozOS.iso
+		rm -rf out/* $(OBJ_DIR)/* $(OBJ) SnoozOS.iso

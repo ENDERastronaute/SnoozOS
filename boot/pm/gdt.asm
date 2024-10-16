@@ -1,6 +1,6 @@
 
-; flat memory model
-gdt_start:
+; flat
+gdt_start: 
     dd 0x0 ; null descriptor (double word)
     dd 0x0
 

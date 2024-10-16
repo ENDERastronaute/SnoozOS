@@ -1,7 +1,15 @@
 
 #include "../drivers/output/headers/screen.h"
+#include "idt/headers/idt.h"
+
+#include <stdint.h>
 
 int main() {
-    print("Hello World!", 0xF, 12, 40);
+    clear_screen();
+    print("Hello World!");
+    init_IDT();
+
+    __asm__("sti");
+
     return 0;
 }

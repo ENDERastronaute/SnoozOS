@@ -1,7 +1,7 @@
 
 ; real-mode
 [org 0x7c00]
-KERNEL_OFFSET equ 0x1000
+    KERNEL_OFFSET equ 0x1000
 
     mov [BOOT_DRIVE], dl ; bios stores boot drive
 
@@ -51,5 +51,6 @@ BOOT_DRIVE: db 0
 ; -- data
 
 ; make bootable
+
 times 510-($-$$) db 0
 dw 0xAA55
