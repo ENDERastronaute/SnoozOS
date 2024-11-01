@@ -1,10 +1,11 @@
 
 KERNEL_DIR := kernel
 DRIVERS_DIR := drivers
+STDLIBDIR := stdlib
 
 OBJ_DIR := objects
 
-SOURCES = $(wildcard $(KERNEL_DIR)/*.c) $(wildcard $(KERNEL_DIR)/**/*.c)  $(wildcard $(DRIVERS_DIR)/**/*.c)
+SOURCES = $(wildcard $(KERNEL_DIR)/*.c) $(wildcard $(KERNEL_DIR)/**/*.c)  $(wildcard $(DRIVERS_DIR)/**/*.c) $(wildcard $(STDLIBDIR)/*.c)
 
 OBJ = $(SOURCES:.c=.o)
 

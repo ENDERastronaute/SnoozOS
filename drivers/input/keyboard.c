@@ -2,15 +2,21 @@
 #include "headers/keyboard.h"
 #include "../output/headers/screen.h"
 #include <stdbool.h>
+#include "../../stdlib/stdlib.h"
 
+bool caps = false;
+bool caps_lock = false;
+bool alt = false;
+
+void keyboard_interrupt(struct Interrupt_registers *reg) {
 const char* undercase[128] = {
     0,    0,    "1",  "2",  "3",  "4",  "5",  "6",  // 0-7
-    "7",  "8",  "9",  "0",  "'",  "^",  0,    0,    // 8-15
-    "q",  "w",  "e",  "r",  "t",  "z",  "u",  "i",  // 16-23
-    "o",  "p",  "è",  "$",  0,    0,    "a",  "s",  // 24-31
-    "d",  "f",  "g",  "h",  "j",  "k",  "l",  "é",  // 32-39
-    "à",  0,    0,    "y",  "x",  "c",  "v",  "b",  // 40-47
-    "n",  "m",  ",",  ".",  "-",  0,    "*",  0,    // 48-55
+    "7",  "8",  "9",  "0",  "-",  "=",  0,    0,    // 8-15
+    "q",  "w",  "e",  "r",  "t",  "y",  "u",  "i",  // 16-23
+    "o",  "p",  "[",  "]",  0,    0,    "a",  "s",  // 24-31
+    "d",  "f",  "g",  "h",  "j",  "k",  "l",  ";",  // 32-39
+    "'",  "`",  0,    "\\", "z",  "x",  "c",  "v",  // 40-47
+    "b",  "n",  "m",  ",",  ".",  "/",  0,    "*",  // 48-55
     " ",  0,    0,    0,    0,    0,    0,    0,    // 56-63
     0,    0,    0,    0,    0,    0,    0,    0,    // 64-71
     0,    0,    0,    0,    0,    0,    0,    0,    // 72-79
@@ -22,13 +28,13 @@ const char* undercase[128] = {
 };
 
 const char* uppercase[128] = {
-    0,    0,    "+",  "\"", "*",  "ç",  "%",  "&",  // 0-7
-    "/",  "(",  ")",  "=",  "?",  "`",  0,    0,    // 8-15
-    "Q",  "W",  "E",  "R",  "T",  "Z",  "U",  "I",  // 16-23
-    "O",  "P",  "ü",  "!",  0,    0,    "A",  "S",  // 24-31
-    "D",  "F",  "G",  "H",  "J",  "K",  "L",  "ö",  // 32-39
-    "ä",  0,    0,    "Y",  "X",  "C",  "V",  "B",  // 40-47
-    "N",  "M",  ";",  ":",  "_",  0,    "*",  0,    // 48-55
+    0,    0,    "!",  "@",  "#",  "$",  "%",  "^",  // 0-7
+    "&",  "*",  "(",  ")",  "_",  "+",  0,    0,    // 8-15
+    "Q",  "W",  "E",  "R",  "T",  "Y",  "U",  "I",  // 16-23
+    "O",  "P",  "{",  "}",  0,    0,    "A",  "S",  // 24-31
+    "D",  "F",  "G",  "H",  "J",  "K",  "L",  ":",  // 32-39
+    "\"", "~",  0,    "|",  "Z",  "X",  "C",  "V",  // 40-47
+    "B",  "N",  "M",  "<",  ">",  "?",  0,    "*",  // 48-55
     " ",  0,    0,    0,    0,    0,    0,    0,    // 56-63
     0,    0,    0,    0,    0,    0,    0,    0,    // 64-71
     0,    0,    0,    0,    0,    0,    0,    0,    // 72-79
@@ -40,8 +46,8 @@ const char* uppercase[128] = {
 };
 
 const char* alt_mod[128] = {
-    0,    0,    "~",  "ˇ",  "^",  "˘",  "°",  "˛",  // 0-7
-    "`",  "˙",  "´",  "˝",  "¨",  "¸",  0,    0,    // 8-15
+    0,    0,    "°",  "±",  "²",  "³",  "¤",  "§",  // 0-7
+    "¶",  "×",  "÷",  "≠",  "≤",  "≥",  0,    0,    // 8-15
     "@",  0,    "€",  0,    0,    0,    0,    0,    // 16-23
     0,    0,    "[",  "]",  0,    0,    "{",  "}",  // 24-31
     0,    0,    0,    0,    0,    0,    "\\", 0,    // 32-39
@@ -57,11 +63,6 @@ const char* alt_mod[128] = {
     0,    0,    0,    0,    0,    0,    0,    0     // 112-127
 };
 
-bool caps = false;
-bool caps_lock = false;
-bool alt = false;
-
-void keyboard_interrupt(struct Interrupt_registers *reg) {
     unsigned char scancode = port_in_b(0x60) & 0X7F;
     unsigned char press = port_in_b(0x60) & 0x80;
     
@@ -78,6 +79,9 @@ void keyboard_interrupt(struct Interrupt_registers *reg) {
             print("erreur", WOB);
             break;
         case 0x1: // ESC
+            break;
+        case 0x0E: // return
+            break;
         case 0x3B: // F keys
         case 0x3C:
         case 0x3D:
@@ -122,9 +126,9 @@ void keyboard_interrupt(struct Interrupt_registers *reg) {
             else if (press == 0) {
                 const char* key = undercase[scancode];
 
-                if (key != 0) {
+                if (!(key == 0)) {
                     print(key, WOB);
-                }
+                } 
             }
     }
 }

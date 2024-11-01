@@ -74,9 +74,9 @@ void irq_handler(struct Interrupt_registers* reg) {
 
 void isr_handler(struct Interrupt_registers* reg) {
     if (reg->vector < 32) {
-        print(e_messages[reg->vector]);
-        print("\n");
-        print("Exception occured! Starting Panic mode.");
+        print(e_messages[reg->vector], WOB);
+        print("\n", WOB);
+        print("Exception occured! Starting Panic mode.", WOB);
         for (;;);
     }
 }
