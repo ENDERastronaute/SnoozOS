@@ -50,6 +50,11 @@ int handle_scrolling(int cursor_offset) {
     return cursor_offset;
 }
 
+void newline(int* offset) {
+    int rows = *offset / (2 * MAX_COLS);
+    *offset = get_screen_offset(79, rows);
+}
+
 void print_char(char character, int col, int row, int attribute) {
     volatile unsigned char *video_memory = (volatile unsigned char *) VIDEO_MEMORY_ADDRESS;
 
@@ -63,8 +68,44 @@ void print_char(char character, int col, int row, int attribute) {
     }
 
     if (character == '\n') {
+        newline(&offset);
+    }
+    else if (character == '\r') {
+        offset = 0; 
+    }
+    else if (character == '\b') {
         int rows = offset / (2 * MAX_COLS);
-        offset = get_screen_offset(79, rows);
+        int cols = (offset / 2) - rows * MAX_COLS;
+
+        if (col == 0 && row != 0) {
+            offset = get_screen_offset(79, rows - 1);
+        }
+        else {
+            offset = get_screen_offset(cols - 1, rows);
+        }
+        
+        video_memory[offset] = ' ';
+        video_memory[offset + 1] = attribute;
+
+        offset -= 2;
+    }
+    else if (character == '\t') {
+        int rows = offset / (2 * MAX_COLS);
+        int cols = (offset / 2) - rows * MAX_COLS;
+
+        if (col == MAX_COLS) {
+            newline(&offset);
+        }
+        
+        int tab_len = 4 - (cols % 4);
+
+        while (tab_len != 0) {
+            video_memory[offset] = ' ';
+            video_memory[offset + 1] = attribute;
+
+            tab_len--;
+            offset += 2;
+        }
     }
     else {
         video_memory[offset] = character;
