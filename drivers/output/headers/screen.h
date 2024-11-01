@@ -15,8 +15,8 @@
 #define REG_SCREEN_DATA 0x3D5
 #include "../../low_level/headers/io.h"
 
-void print_char(char character, int col = 0x0, int row = 0x0, int attribute = WOB);
-void print(const char *str, int colour = WOB);
+void print_char(char character, int col, int row, int attribute);
+void print(const char *str, int colour);
 void clear_screen();
 
 #endif //SCREEN_H

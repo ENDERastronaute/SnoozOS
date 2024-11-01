@@ -1,6 +1,7 @@
 
 #include "headers/keyboard.h"
 #include "../output/headers/screen.h"
+#include <stdbool.h>
 
 const char* undercase[128] = {
     0,    0,    "1",  "2",  "3",  "4",  "5",  "6",  // 0-7
@@ -61,8 +62,8 @@ bool caps_lock = false;
 bool alt = false;
 
 void keyboard_interrupt(struct Interrupt_registers *reg) {
-    char scancode = port_in_b(0x60) & 0X7F;
-    char press = port_in_b(0x60) & 0x80;
+    unsigned char scancode = port_in_b(0x60) & 0X7F;
+    unsigned char press = port_in_b(0x60) & 0x80;
     
     switch (scancode) {
         case 0x00:
@@ -74,7 +75,7 @@ void keyboard_interrupt(struct Interrupt_registers *reg) {
         case 0xFD:
         case 0xFE:
         case 0xFF:
-            print("erreur");
+            print("erreur", WOB);
             break;
         case 0x1: // ESC
         case 0x3B: // F keys
@@ -113,16 +114,16 @@ void keyboard_interrupt(struct Interrupt_registers *reg) {
             break;
         default:
             if (press == 0 && (caps || caps_lock)) {
-                print(uppercase[scancode]);
+                print(uppercase[scancode], WOB);
             }
             else if (press == 0 && alt) {
-                print(alt_mod[scancode]);
+                print(alt_mod[scancode], WOB);
             }
             else if (press == 0) {
                 const char* key = undercase[scancode];
 
                 if (key != 0) {
-                    print(key);
+                    print(key, WOB);
                 }
             }
     }

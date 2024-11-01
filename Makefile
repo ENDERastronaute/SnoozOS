@@ -4,9 +4,9 @@ DRIVERS_DIR := drivers
 
 OBJ_DIR := objects
 
-SOURCES = $(wildcard $(KERNEL_DIR)/*.cpp) $(wildcard $(KERNEL_DIR)/**/*.cpp)  $(wildcard $(DRIVERS_DIR)/**/*.cpp)
+SOURCES = $(wildcard $(KERNEL_DIR)/*.c) $(wildcard $(KERNEL_DIR)/**/*.c)  $(wildcard $(DRIVERS_DIR)/**/*.c)
 
-OBJ = $(SOURCES:.cpp=.o)
+OBJ = $(SOURCES:.c=.o)
 
 # Cible par défaut
 all: $(OBJ) SnoozOS.iso
@@ -43,8 +43,8 @@ ${OBJ_DIR}/idtasm.o : kernel/idt/idt.asm
 ${OBJ_DIR}/entry.o : kernel/entry/entry.asm
 		yasm $< -f elf -o $@
 
-%.o : %.cpp
-		/usr/local/cross/bin/i386-elf-g++ -ffreestanding -fpermissive -c $< -o $@
+%.o : %.c
+		/usr/local/cross/bin/i386-elf-gcc -ffreestanding -fpermissive -c $< -o $@
 
 # Cible de nettoyage
 clean:

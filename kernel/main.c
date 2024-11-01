@@ -4,12 +4,12 @@
 
 #include <stdint.h>
 
-extern "C" int main() {
+int main() {
     clear_screen();
 
-    print("Loading kernel...\n");
+    print("Loading kernel...\n", WOB);
 
-    print("Loading IDT...\n");
+    print("Loading IDT...\n", WOB);
 
     init_IDT();
     install_IRQs();
