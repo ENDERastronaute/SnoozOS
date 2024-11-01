@@ -4,12 +4,13 @@
 
 #include <stdint.h>
 
-int main() {
+extern "C" int main() {
     clear_screen();
-    print("Hello World!");
+
+    print("Loading kernel...\n");
+
+    print("Loading IDT...\n");
+
     init_IDT();
-
-    __asm__("sti");
-
-    return 0;
+    install_IRQs();
 }
